@@ -1,0 +1,6 @@
+{
+  "name": "Deliverd",
+  "description": "Premium, friendly, and reliable local and long-distance moving and delivery services in Surrey, BC and across Canada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
