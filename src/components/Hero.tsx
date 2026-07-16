@@ -1,8 +1,29 @@
-import { Phone, CheckCircle, ShieldCheck, Award, Users } from "lucide-react";
-// @ts-ignore
-import heroBg from "../assets/images/hero_moving_background_1784221454935.jpg";
+import { useState, useEffect, useRef } from "react";
+import { Phone, CheckCircle, ShieldCheck, Award, Users, Volume2, VolumeX } from "lucide-react";
+
+const VIDEO_URL = "https://rre9mgdmrmv3ysal.public.blob.vercel-storage.com/Deliverd_moving_and_delivery_ser%E2%80%A6_202607162207.mp4";
 
 export default function Hero() {
+  const [scrollY, setScrollY] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleToggleMute = () => {
+    if (videoRef.current) {
+      const nextMuteState = !videoRef.current.muted;
+      videoRef.current.muted = nextMuteState;
+      setIsMuted(nextMuteState);
+    }
+  };
+
   const handleScrollToQuote = () => {
     const element = document.getElementById("contact");
     if (element) {
@@ -21,16 +42,22 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative bg-slate-50 pt-8 pb-16 lg:pt-16 lg:pb-24 overflow-hidden border-b border-slate-100">
-      {/* Background Image of Moving Truck */}
-      <div className="absolute inset-0 z-0 select-none pointer-events-none">
-        <img 
-          src={heroBg} 
-          alt="Professional Moving Truck Background" 
-          className="w-full h-full object-cover opacity-20 sm:opacity-25"
-          referrerPolicy="no-referrer"
+      {/* Parallax Background Video of Moving Truck */}
+      <div 
+        className="absolute inset-x-0 -top-[15%] h-[130%] z-0 select-none pointer-events-none will-change-transform"
+        style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+      >
+        <video 
+          ref={videoRef}
+          src={VIDEO_URL} 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="w-full h-full object-cover opacity-45 sm:opacity-50"
         />
         {/* Soft elegant gradient overlays to blend the background image perfectly */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/30 via-slate-50/80 to-slate-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/15 via-slate-50/60 to-slate-50" />
       </div>
 
       {/* Decorative subtle ambient lights */}
@@ -120,6 +147,21 @@ export default function Hero() {
           ))}
         </div>
 
+      </div>
+
+      {/* Mute/Unmute floating toggle */}
+      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-8 z-20">
+        <button
+          onClick={handleToggleMute}
+          className="bg-white/80 hover:bg-white/90 backdrop-blur-md text-slate-800 border border-slate-200/60 p-3 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer group"
+          title={isMuted ? "Unmute video" : "Mute video"}
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-slate-600 group-hover:text-[#155EEF] transition-colors" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-[#12B76A] group-hover:scale-110 transition-all animate-pulse" />
+          )}
+        </button>
       </div>
     </section>
   );
